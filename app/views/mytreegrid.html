@@ -1,0 +1,30 @@
+<p>This is the myTreeGrid view.</p>
+<div class="controlBar">
+    <ul>
+        <li>Add</li>
+        <li>Edit</li>
+        <li>Delete</li>
+    </ul>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Country Name</th>
+            <th>Country Code</th>
+        </tr>
+    </thead>
+    <tr data-ng-repeat="r in list">
+        <td>
+            <div data-ng-dblclick="editItem($index, r)" data-ng-mouseout="!r.edit">
+                <span data-ng-bind="r.Name" data-ng-show="!r.edit"></span>
+                <input data-ng-show="r.edit" data-ng-model="r.Name" data-ng-blur="r.edit=!r.edit">
+            </div>
+        </td>
+        <td>
+            <div data-ng-dblclick="editItem($index, r)" data-ng-mouseup="!r.edit">
+                <span data-ng-bind="r.Code" data-ng-show="!r.edit"></span>
+                <input data-ng-show="r.edit" data-ng-model="r.Code" data-ng-blur="r.edit=!r.edit">
+            </div>
+        </td>
+    </tr>
+</table>
