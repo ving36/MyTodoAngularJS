@@ -15,15 +15,15 @@
     </thead>
     <tr data-ng-repeat="r in list">
         <td>
-            <div data-ng-dblclick="editItem($index, r)" data-ng-mouseout="!r.edit">
+            <div name="$index+'Name'" data-ng-dblclick="editItem($index,'Name', r)">
                 <span data-ng-bind="r.Name" data-ng-show="!r.edit"></span>
-                <input data-ng-show="r.edit" data-ng-model="r.Name" data-ng-blur="r.edit=!r.edit">
+                <input data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-model="r.Name" data-ng-blur="r.edit=!r.edit;">
             </div>
         </td>
         <td>
-            <div data-ng-dblclick="editItem($index, r)" data-ng-mouseup="!r.edit">
+            <div name="$index+'Code'" data-ng-dblclick="editItem($index,'Code', r)" data-ng-mouseleave="!r.edit">
                 <span data-ng-bind="r.Code" data-ng-show="!r.edit"></span>
-                <input data-ng-show="r.edit" data-ng-model="r.Code" data-ng-blur="r.edit=!r.edit">
+                <input data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-model="r.Code" data-ng-blur="r.edit=!r.edit;">
             </div>
         </td>
     </tr>
