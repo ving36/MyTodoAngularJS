@@ -116,34 +116,35 @@ angular.module('mytodoApp')
             },
             link: function (scope, element, attrs) {
                 var delayFn, parentObj, exitEditFn;
+                // function to update the value on the property on the parent scope that is assigned to directive
+                var updateAssociatedParentProp = function (prop, newVal) {
+                    if (prop.indexOf('.') > -1) {
+                        var temp = parentObj.split('.');
+                        var parentVar = scope.$parent;
+                        for (var i = 0; i < temp.length - 1; i++) {
+                            if (parentVar[temp[i]])
+                                parentVar = parentVar[temp[i]];
+                        }
+                        parentVar[temp[temp.length - 1]] = newVal;
+                    } else {
+                        scope.$parent[prop] = newVal;
+                    }
+                };
+
                 scope.target = undefined;
                 parentObj = attrs.enableEdit;
                 delayFn = element.on('blur', 'input', function (event) {
                     scope.target = event.delegateTarget;
-                    //console.log('blurred1:' + target);
                     $timeout(function () {
-                        console.log('blurred:');
-                        console.log(scope.target);
-                        console.log(scope.target !== event.delegateTarget);
-                        scope.$parent.r.edit = false;
-                        //alert('hi');
-                        //scope.target = undefined;
-                    }, 0.5);
+                        updateAssociatedParentProp(parentObj, false);
+                    }, 0);
                 });
                 element.on('focus', 'input', function (event) {
-                    console.log('focus:');
-                    console.log(event.delegateTarget);
-                    console.log('target:');
-                    console.log(scope.target);
-                    //console.log(scope.$parent.parentObj);
                     if (scope.target === undefined || scope.target === event.delegateTarget) {
                         clearTimeout(delayFn);
-                        //alert('new hi');
                         $timeout(function () {
-                            scope.$parent.r.edit = true;
+                            updateAssociatedParentProp(parentObj, true);
                         }, 0);
-                    } else {
-                        //scope.target = event.delegateTarget;
                     }
                 });
             }
