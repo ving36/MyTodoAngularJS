@@ -6,24 +6,24 @@
         <li>Delete</li>
     </ul>
 </div>
-<table class="table table-striped">
+<table class="table table-striped grid">
     <thead>
         <tr>
             <th>Country Name</th>
             <th>Country Code</th>
         </tr>
     </thead>
-    <tr data-ng-repeat="r in list">
-        <td>
-            <div name="$index+'Name'" data-ng-dblclick="editItem($index,'Name', r)">
+    <tr data-ng-repeat="r in list" class="gridRow" enable-edit="r.edit">
+        <td style="padding:0px;margin:0px;border-width:0px;">
+            <div style="padding:0px;margin:0px;border-width:0px;" name="$index+'Name'" data-ng-dblclick="editItem($index,'Name', r)">
                 <span data-ng-bind="r.Name" data-ng-show="!r.edit"></span>
-                <input data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-model="r.Name" data-ng-blur="r.edit=!r.edit;">
+                <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-model="r.Name" id="{{$index}}">
             </div>
         </td>
-        <td>
-            <div name="$index+'Code'" data-ng-dblclick="editItem($index,'Code', r)" data-ng-mouseleave="!r.edit">
+        <td style="padding:0px;margin:0px;border-width:0px;">
+            <div style="padding:0px;margin:0px;border-width:0px;" name="$index+'Code'" data-ng-dblclick="editItem($index,'Code', r)">
                 <span data-ng-bind="r.Code" data-ng-show="!r.edit"></span>
-                <input data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-model="r.Code" data-ng-blur="r.edit=!r.edit;">
+                <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-model="r.Code" id="{{$index}}">
             </div>
         </td>
     </tr>

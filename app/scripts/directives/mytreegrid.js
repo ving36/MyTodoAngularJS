@@ -12,10 +12,16 @@ angular.module('mytodoApp')
             templateUrl: 'views/mytreegrid.html',
             restrict: 'E',
             scope: {
-                list: "="
+                list: '='
             },
             link: function (scope, element, attrs) {
-
+                /* var grid = element.find('.grid');
+                 var inputs = grid.find('tr input');
+                 inputs.focus(function () {
+                     this.parent('tr').attr('enableEdit', true);
+                 }).blur(function () {
+                     this.parent('tr').attr('enableEdit', false);
+                 });*/
             },
             controller: function ($scope) {
                 $scope.rowEditIndex = undefined;
@@ -25,39 +31,45 @@ angular.module('mytodoApp')
                         $scope.rowEditIndex = index;
                         if (angular.isArray($scope.list)) {
                             for (var i = 0; i < $scope.list.length; i++) {
-                                if (i != index)
+                                if (i !== index)
                                     $scope.list[i].edit = false;
                             }
                         }
                     }
                     item.edit = true; //!item.edit;
                     $scope.currentProp = prop;
-                    if (prop != undefined)
+                    if (prop !== undefined)
                         item.focus = true;
                 };
 
                 $scope.hasFocus = function (prop, index) {
+                    //return $scope.currentProp === prop && index === $scope.rowEditIndex ? true : false;
                     return $scope.currentProp === prop && index === $scope.rowEditIndex ? true : false;
                 };
+
+                $scope.inputBlur = function (item) {
+                    item.edit = !item.edit;
+                    $scope.currentProp = undefined;
+                };
+
+                $scope.inputFocus = function (prop) {
+                    $scope.currentProp = prop;
+                };
+
                 var init = function () {
                     if (angular.isArray($scope.list)) {
                         for (var i = 0; i < $scope.list.length; i++) {
-                            //                            var config = {
-                            //                                edit: false,
-                            //                                focus: false
-                            //                            };
-                            //                            $scope.list[i].config = config;
                             $scope.list[i].edit = false;
                             $scope.list[i].focus = false;
-
                         }
                     }
-                }
+                };
+
                 init();
             }
         };
     })
-    .directive("focusMe", function () {
+    .directive('focusMe', function ($timeout) {
         return {
             restrict: 'A',
             scope: {
@@ -65,18 +77,24 @@ angular.module('mytodoApp')
             },
             link: function (scope, element, attrs) {
                 //scope.setFocus = scope.$eval(attrs['focusMe']);
-                if (scope.setFocus != undefined && scope.setFocus) {
+                if (scope.setFocus !== undefined && scope.setFocus) {
                     element[0].focus();
+                    //console.log('focus me executed1');
                 }
                 scope.$watch('setFocus', function (newValue, oldValue) {
-                    if (newValue != null && newValue != undefined && newValue === true) {
-                        element[0].focus();
+                    if (newValue !== null && newValue !== undefined && newValue === true) {
+                        $timeout(function () {
+                            //if (scope.$eval(attrs.focusMe)) {
+                            element[0].focus();
+                            //console.log('focus me executed2');
+                            //}
+                        }, 0, false);
                     }
                 });
             }
-        }
+        };
     })
-    .directive("unorderedList", function () {
+    .directive('unorderedList', function () {
         return {
             scope: {
                 data: '='
@@ -84,10 +102,42 @@ angular.module('mytodoApp')
             link: function (scope, element, attrs) {
                 //scope.data = scope[attrs["unorderedList"]];
             },
-            restrict: "E",
+            restrict: 'E',
             templateUrl: 'views/unorderedlist.html',
             controller: function ($scope) {
 
             }
-        }
-    });
+        };
+    })
+    .directive('enableEdit', ['$timeout', function ($timeout) {
+        return {
+            scope: {
+                value: '=enableEdit'
+            },
+            link: function (scope, element, attrs) {
+                var target, delayFn, parentObj;
+                parentObj = attrs.enableEdit;
+                delayFn = element.find('input').blur(function (event) {
+                    target = event.delegateTarget.id;
+                    console.log('blurred1:' + target);
+                    $timeout(function () {
+                        console.log('blurred2:' + target);
+                        //scope.$parent.r.edit = false;
+                        //console.log('blur:' + event.delegateTarget);
+                    }, 0);
+                });
+                element.find('input').focus(function (event) {
+                    console.log('focus:' + event.delegateTarget.id);
+                    console.log('target:' + target);
+                    //console.log(scope.$parent.parentObj);
+                    if (target === event.delegateTarget.id) {
+                        clearTimeout(delayFn);
+                    } else {
+                        //scope.$parent[attrs['enableEdit']] = false;
+                        //scope.$parent.r.edit = false;
+                        //target = undefined;
+                    }
+                });
+            }
+        };
+    }]);
