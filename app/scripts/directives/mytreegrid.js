@@ -88,7 +88,7 @@ angular.module('mytodoApp')
                             element[0].focus();
                             //console.log('focus me executed2');
                             //}
-                        }, 0, false);
+                        }, 0);
                     }
                 });
             }
@@ -112,30 +112,38 @@ angular.module('mytodoApp')
     .directive('enableEdit', ['$timeout', function ($timeout) {
         return {
             scope: {
-                value: '=enableEdit'
+                value: '=enableEdit',
             },
             link: function (scope, element, attrs) {
-                var target, delayFn, parentObj;
+                var delayFn, parentObj, exitEditFn;
+                scope.target = undefined;
                 parentObj = attrs.enableEdit;
-                delayFn = element.find('input').blur(function (event) {
-                    target = event.delegateTarget.id;
-                    console.log('blurred1:' + target);
+                delayFn = element.on('blur', 'input', function (event) {
+                    scope.target = event.delegateTarget;
+                    //console.log('blurred1:' + target);
                     $timeout(function () {
-                        console.log('blurred2:' + target);
-                        //scope.$parent.r.edit = false;
-                        //console.log('blur:' + event.delegateTarget);
-                    }, 0);
+                        console.log('blurred:');
+                        console.log(scope.target);
+                        console.log(scope.target !== event.delegateTarget);
+                        scope.$parent.r.edit = false;
+                        //alert('hi');
+                        //scope.target = undefined;
+                    }, 0.5);
                 });
-                element.find('input').focus(function (event) {
-                    console.log('focus:' + event.delegateTarget.id);
-                    console.log('target:' + target);
+                element.on('focus', 'input', function (event) {
+                    console.log('focus:');
+                    console.log(event.delegateTarget);
+                    console.log('target:');
+                    console.log(scope.target);
                     //console.log(scope.$parent.parentObj);
-                    if (target === event.delegateTarget.id) {
+                    if (scope.target === undefined || scope.target === event.delegateTarget) {
                         clearTimeout(delayFn);
+                        //alert('new hi');
+                        $timeout(function () {
+                            scope.$parent.r.edit = true;
+                        }, 0);
                     } else {
-                        //scope.$parent[attrs['enableEdit']] = false;
-                        //scope.$parent.r.edit = false;
-                        //target = undefined;
+                        //scope.target = event.delegateTarget;
                     }
                 });
             }
