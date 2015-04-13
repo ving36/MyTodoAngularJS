@@ -30,6 +30,7 @@ module.exports = function(config) {
       'bower_components/jquery-ui/jquery-ui.js',
       'bower_components/angular-ui-sortable/sortable.js',
       'app/scripts/**/*.js',
+      'app/views/*.html',
       'test/mock/**/*.js',
       'test/spec/**/*.js'
     ],
@@ -56,9 +57,18 @@ module.exports = function(config) {
     // Which plugins to enable
     plugins: [
       'karma-phantomjs-launcher',
-      'karma-jasmine'
+      'karma-jasmine',
+      'karma-ng-html2js-preprocessor' 
     ],
 
+    preprocessors: { 
+      'app/views/*.html': 'ng-html2js'
+    }, 
+
+    ngHtml2JsPreprocessor: { 
+      stripPrefix: 'app/',
+      moduleName: 'mytemplates'
+    },
     // Continuous Integration mode
     // if true, it capture browsers, run tests and exit
     singleRun: false,
