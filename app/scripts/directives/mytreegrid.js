@@ -12,18 +12,21 @@ angular.module('mytodoApp')
             templateUrl: 'views/mytreegrid.html',
             restrict: 'E',
             scope: {
-                list: '='
+                dList: "="
             },
-            link: function (scope, element, attrs) {
-                /* var grid = element.find('.grid');
+            /*link: function (scope, element, attrs) {
+                 var grid = element.find('.grid');
                  var inputs = grid.find('tr input');
                  inputs.focus(function () {
                      this.parent('tr').attr('enableEdit', true);
                  }).blur(function () {
                      this.parent('tr').attr('enableEdit', false);
-                 });*/
-            },
+                 });
+            },*/
             controller: function ($scope) {
+                $scope.obj = {
+                    items: $scope.dList
+                };
                 $scope.rowEditIndex = undefined;
                 $scope.currentProp = undefined;
                 $scope.editItem = function (index, prop, item) {
@@ -149,4 +152,36 @@ angular.module('mytodoApp')
                 });
             }
         };
-    }]);
+    }])
+    .directive('svgCircle', function () {
+        return {
+            restrict: 'E',
+            scope: {
+                size: "@",
+                stroke: "@",
+                fill: "@",
+                dSource: "="
+            },
+            replace: true,
+            templateUrl: 'views/svgcircle.html',
+            link: function (scope, element, attr) {
+                var calculateValues = function (size) {
+                    var canvasSize = size * 2.5;
+                    scope.obj = scope.dSource;
+                    //scope.obj = scope.$eval(attr['objArray']);
+                    //console.log(scope.obj);
+                    scope.values = {
+                        canvas: canvasSize,
+                        radius: size,
+                        center: canvasSize / 2
+                    };
+                };
+
+                var size = parseInt(attr.size, 0);
+
+                attr.$observe('size', function (newSize) {
+                    calculateValues(parseInt(newSize, 0));
+                });
+            }
+        };
+    });

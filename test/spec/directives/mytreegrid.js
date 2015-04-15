@@ -8,45 +8,93 @@ describe('Directive: myTreeGrid', function () {
     beforeEach(module('mytemplates'));
 
     var el,
-        $scope;
+        scope, $compile;
+
+    beforeEach(inject(function ($rootScope, _$compile_) {
+
+        scope = $rootScope.$new();
+        $compile = _$compile_;
+
+        scope.countries = {
+            items: [{
+                    Name: "England",
+                    Code: 123
+            },
+                {
+                    Name: "India",
+                    Code: 456
+            }]
+        };
+
+        el = '<my-tree-grid d-list="countries.items"></my-tree-grid>';
+        el = $compile(el)(scope);
+        scope.$digest();
+    }));
+
+
+    it('should get source list in the link function', inject(function () {
+        var isolated = el.isolateScope();
+        //        console.log(isolated.dList);
+        expect(isolated.dList).toBeDefined();
+        expect(isolated.dList.length).toBeGreaterThan(0);
+        console.log(el.find('table').html());
+        console.log(el[0]);
+        //console.log(el[0].find('.gridRow'));
+    }));
+});
+
+/*Directive to test passing of object to isolate scope*/
+describe('directive: svg-circle', function () {
+    var element, scope;
+
+    beforeEach(module('mytodoApp'));
+    beforeEach(module('mytemplates'));
 
     beforeEach(inject(function ($rootScope, $compile) {
-        
-        $scope = $rootScope.$new();
-        el = angular.element("<my-tree-grid></my-tree-grid>");
-        $compile(el)($scope);
-        $rootScope.$digest();
-        
-        console.log(el.html());
+        scope = $rootScope.$new();
 
-        $scope.list = [
-            {
-                name: "Apples",
-                category: "Fruit",
-                price: 1.20,
-                expiry: 10
+        element =
+            '<svg-circle size="{{size}}" stroke="{{strokeValue}}" fill="blue" obj-array="{{countries.items}}" d-source="countries.items"></svg-circle>';
+
+        scope.size = 100;
+        scope.strokeValue = 'black';
+        scope.countries = {
+            items: [{
+                    Name: "England",
+                    Code: 123
             },
-            {
-                name: "Bananas",
-                category: "Fruit",
-                price: 2.42,
-                expiry: 7
-            },
-            {
-                name: "Pears",
-                category: "Fruit",
-                price: 2.02,
-                expiry: 6
-            }];
+                {
+                    Name: "India",
+                    Code: 456
+            }]
+        };
+
+        element = $compile(element)(scope);
+        scope.$digest();
     }));
 
-    it('should show a grid view', inject(function () {
-        expect($scope.list.length).toEqual(3);
-        expect(el.find('p').length).toBe(1);
-        //expect(element.find('p').text()).toBe('this is the myTreeGrid directive');
-    }));
+    describe('with the first given value', function () {
+        it("should compute the size to create other values", function () {
+            var isolated = element.isolateScope();
+            expect(isolated.values.canvas).toBe(250);
+            expect(isolated.values.center).toBe(125);
+            expect(isolated.values.radius).toBe(100);
+            //            console.log('isolated: obj: ');
+            //            console.log(isolated.dSource);
+            //            console.log(isolated.stroke);
+        });
 
-    it('should get source list in the link function', inject(function ($compile) {
-        //expect(element.text()).toBe(undefined);
-    }));
+        it("should contain a svg tag with proper size", function () {
+            expect(element.attr('height')).toBe('250');
+            expect(element.attr('width')).toBe('250');
+        });
+
+        it("should contain a circle with proper attributes", function () {
+            expect(element.find('circle').attr('cx')).toBe('125');
+            expect(element.find('circle').attr('cy')).toBe('125');
+            expect(element.find('circle').attr('r')).toBe('100');
+            expect(element.find('circle').attr('stroke')).toBe('black');
+            expect(element.find('circle').attr('fill')).toBe('blue');
+        });
+    });
 });

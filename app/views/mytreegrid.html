@@ -13,15 +13,15 @@
             <th>Country Code</th>
         </tr>
     </thead>
-    <tr data-ng-repeat="r in list" class="gridRow" enable-edit="r.edit" id="$index">
+    <tr data-ng-repeat="r in obj.items" class="gridRow" enable-edit="r.edit" id="$index">
         <td style="padding:0px;margin:0px;border-width:0px;">
-            <div style="padding:0px;margin:0px;border-width:0px;" name="$index+'Name'" data-ng-dblclick="editItem($index,'Name', r)">
+            <div style="padding:0px;margin:0px;border-width:0px;" data-ng-dblclick="editItem($index,'Name', r)">
                 <span data-ng-bind="r.Name" data-ng-show="!r.edit"></span>
                 <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-focus="inputFocus('Name')" data-ng-model="r.Name" id="{{$index}}">
             </div>
         </td>
         <td style="padding:0px;margin:0px;border-width:0px;">
-            <div style="padding:0px;margin:0px;border-width:0px;" name="$index+'Code'" data-ng-dblclick="editItem($index,'Code', r)">
+            <div style="padding:0px;margin:0px;border-width:0px;" data-ng-dblclick="editItem($index,'Code', r)">
                 <span data-ng-bind="r.Code" data-ng-show="!r.edit"></span>
                 <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-focus="inputFocus('Code')" data-ng-model="r.Code" id="{{$index}}">
             </div>
