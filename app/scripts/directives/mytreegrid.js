@@ -7,7 +7,7 @@
  * # myTreeGrid
  */
 angular.module('mytodoApp')
-    .directive('myTreeGrid', function () {
+    .directive('myTreeGrid', function ($timeout) {
         return {
             templateUrl: 'views/mytreegrid.html',
             restrict: 'E',
@@ -23,7 +23,7 @@ angular.module('mytodoApp')
                     }
                 }
             },
-            controller: function ($scope) {
+            controller: function ($scope, $timeout) {
                 $scope.obj = {
                     items: $scope.list
                 };
@@ -39,6 +39,7 @@ angular.module('mytodoApp')
                             }
                         }
                     }
+                    console.log(prop);
                     item.edit = true; //!item.edit;
                     $scope.currentProp = prop;
                     if (prop !== undefined)
@@ -46,18 +47,22 @@ angular.module('mytodoApp')
                 };
 
                 $scope.hasFocus = function (prop, index) {
-                    //return $scope.currentProp === prop && index === $scope.rowEditIndex ? true : false;
                     return $scope.currentProp === prop && index === $scope.rowEditIndex ? true : false;
                 };
 
                 $scope.inputBlur = function (item) {
-                    item.edit = !item.edit;
+                    //item.edit = !item.edit;
                     $scope.currentProp = undefined;
                 };
 
                 $scope.inputFocus = function (prop) {
                     $scope.currentProp = prop;
+                    console.log(prop);
                 };
+
+                $scope.$watch('rowEditIndex', function (newValue, oldValue) {
+
+                })
             }
         };
     })
@@ -86,28 +91,13 @@ angular.module('mytodoApp')
             }
         };
     })
-    .directive('unorderedList', function () {
-        return {
-            scope: {
-                data: '='
-            },
-            link: function (scope, element, attrs) {
-                //scope.data = scope[attrs["unorderedList"]];
-            },
-            restrict: 'E',
-            templateUrl: 'views/unorderedlist.html',
-            controller: function ($scope) {
-
-            }
-        };
-    })
     .directive('enableEdit', ['$timeout', function ($timeout) {
         return {
             scope: {
                 value: '=enableEdit',
             },
             link: function (scope, element, attrs) {
-                var delayFn, parentObj, exitEditFn;
+                var delayFn, parentObj, exitEdit;
                 // function to update the value on the property on the parent scope that is assigned to directive
                 var updateAssociatedParentProp = function (prop, newVal) {
                     if (prop.indexOf('.') > -1) {
@@ -140,18 +130,28 @@ angular.module('mytodoApp')
                     }
                 });*/
 
-                delayFn = element.find('input').bind('blur', function (event) {
+                element.find('input').bind('blur', function (event) {
                     scope.target = event.delegateTarget;
-                    $timeout(function () {
-                        updateAssociatedParentProp(parentObj, false);
-                    }, 0);
+                    exitEdit = true;
+                    delayFn = $timeout(function () {
+                        console.log('delayFn: ' + exitEdit);
+                        if (exitEdit === undefined || exitEdit) {
+                            updateAssociatedParentProp(parentObj, false);
+                            exitEdit = false;
+                        }
+                    }, 100);
+                    /* exitEditFn = $timeout(function () {
+                         scope.target = undefined;
+                     }, 0.5);*/
                 });
                 element.find('input').bind('focus', function (event) {
+                    exitEdit = false;
                     if (scope.target === undefined || scope.target === event.delegateTarget) {
-                        clearTimeout(delayFn);
-                        $timeout(function () {
-                            updateAssociatedParentProp(parentObj, true);
-                        }, 0);
+                        $timeout.cancel(delayFn);
+                        //$timeout(function () {
+                        updateAssociatedParentProp(parentObj, true);
+                        console.log('focusFn: ' + exitEdit);
+                        //}, -100);
                     }
                 });
             }
@@ -186,6 +186,21 @@ angular.module('mytodoApp')
                 attr.$observe('size', function (newSize) {
                     calculateValues(parseInt(newSize, 0));
                 });
+            }
+        };
+    })
+    .directive('unorderedList', function () {
+        return {
+            scope: {
+                data: '='
+            },
+            link: function (scope, element, attrs) {
+                //scope.data = scope[attrs["unorderedList"]];
+            },
+            restrict: 'E',
+            templateUrl: 'views/unorderedlist.html',
+            controller: function ($scope) {
+
             }
         };
     });

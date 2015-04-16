@@ -19,13 +19,13 @@
                 <td style="padding:0px;margin:0px;border-width:0px;">
                     <div style="padding:0px;margin:0px;border-width:0px;" data-ng-dblclick="editItem($index,'Name', r)">
                         <span data-ng-bind="r.Name" data-ng-show="!r.edit"></span>
-                        <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-focus="inputFocus('Name')" data-ng-model="r.Name" id="{{$index}}">
+                        <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Name', $index)" data-ng-focus="inputFocus('Name')" data-ng-blur="inputBlur()" data-ng-model="r.Name" id="{{$index}}">
                     </div>
                 </td>
                 <td style="padding:0px;margin:0px;border-width:0px;">
                     <div style="padding:0px;margin:0px;border-width:0px;" data-ng-dblclick="editItem($index,'Code', r)">
                         <span data-ng-bind="r.Code" data-ng-show="!r.edit"></span>
-                        <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-focus="inputFocus('Code')" data-ng-model="r.Code" id="{{$index}}">
+                        <input style="width:100%;padding:0px;margin:0px;border-width:0px;" data-ng-show="r.edit" focus-me="hasFocus('Code', $index)" data-ng-focus="inputFocus('Code')" data-ng-blur="inputBlur()" data-ng-model="r.Code" id="{{$index}}">
                     </div>
                 </td>
             </tr>

@@ -75,12 +75,8 @@ describe('directive: svg-circle', function () {
             expect(isolated.values.canvas).toBe(250);
             expect(isolated.values.center).toBe(125);
             expect(isolated.values.radius).toBe(100);
-            console.log(element.find('svg').html());
-            //            console.log('isolated: obj: ');
-            //            console.log(isolated.dSource);
-            //            console.log(isolated.stroke);
         });
-
+    
         it("should contain a svg tag with proper size", function () {
             expect(element.attr('height')).toBe('250');
             expect(element.attr('width')).toBe('250');
