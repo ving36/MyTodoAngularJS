@@ -26,20 +26,16 @@ describe('Directive: myTreeGrid', function () {
             }]
         };
 
-        el = '<my-tree-grid d-list="countries.items"></my-tree-grid>';
+        el = '<my-tree-grid list="countries.items"></my-tree-grid>';
         el = $compile(el)(scope);
         scope.$digest();
     }));
 
 
-    it('should get source list in the link function', inject(function () {
+    it('should have rows equal to number of items in source list', inject(function () {
         var isolated = el.isolateScope();
-        //        console.log(isolated.dList);
-        expect(isolated.dList).toBeDefined();
-        expect(isolated.dList.length).toBeGreaterThan(0);
-        console.log(el.find('table').html());
-        console.log(el[0]);
-        //console.log(el[0].find('.gridRow'));
+        expect(isolated.list).toBeDefined();
+        expect(el.find('table').find('tbody').find('tr').length).toEqual(isolated.list.length);
     }));
 });
 
@@ -79,6 +75,7 @@ describe('directive: svg-circle', function () {
             expect(isolated.values.canvas).toBe(250);
             expect(isolated.values.center).toBe(125);
             expect(isolated.values.radius).toBe(100);
+            console.log(element.find('svg').html());
             //            console.log('isolated: obj: ');
             //            console.log(isolated.dSource);
             //            console.log(isolated.stroke);

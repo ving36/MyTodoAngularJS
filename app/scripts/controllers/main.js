@@ -9,33 +9,9 @@
  */
 angular.module('mytodoApp')
     .controller('MainCtrl', ['$scope', function ($scope) {
-
-        $scope.products = [
-            {
-                name: "Apples",
-                category: "Fruit",
-                price: 1.20,
-                expiry: 10
-            },
-            {
-                name: "Bananas",
-                category: "Fruit",
-                price: 2.42,
-                expiry: 7
-            },
-            {
-                name: "Pears",
-                category: "Fruit",
-                price: 2.02,
-                expiry: 6
-            }
-            ];
-
-        //    $scope.todos = [
-        //      'Item 1',
-        //      'Item 2',
-        //      'Item 3'
-        //    ];
+        $scope.size = 10;
+        $scope.stroke = 'black';
+        $scope.fill = 'blue';
 
         $scope.activeMenu = 'home';
         $scope.todos = [];

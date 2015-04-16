@@ -11,21 +11,21 @@ angular.module('mytodoApp')
         return {
             templateUrl: 'views/mytreegrid.html',
             restrict: 'E',
+            replace: true,
             scope: {
-                dList: "="
+                list: "="
             },
-            /*link: function (scope, element, attrs) {
-                 var grid = element.find('.grid');
-                 var inputs = grid.find('tr input');
-                 inputs.focus(function () {
-                     this.parent('tr').attr('enableEdit', true);
-                 }).blur(function () {
-                     this.parent('tr').attr('enableEdit', false);
-                 });
-            },*/
+            link: function (scope, element, attrs) {
+                if (angular.isArray(scope.list)) {
+                    for (var i = 0; i < scope.list.length; i++) {
+                        scope.list[i].edit = false;
+                        scope.list[i].focus = false;
+                    }
+                }
+            },
             controller: function ($scope) {
                 $scope.obj = {
-                    items: $scope.dList
+                    items: $scope.list
                 };
                 $scope.rowEditIndex = undefined;
                 $scope.currentProp = undefined;
@@ -58,17 +58,6 @@ angular.module('mytodoApp')
                 $scope.inputFocus = function (prop) {
                     $scope.currentProp = prop;
                 };
-
-                var init = function () {
-                    if (angular.isArray($scope.list)) {
-                        for (var i = 0; i < $scope.list.length; i++) {
-                            $scope.list[i].edit = false;
-                            $scope.list[i].focus = false;
-                        }
-                    }
-                };
-
-                init();
             }
         };
     })
@@ -136,13 +125,28 @@ angular.module('mytodoApp')
 
                 scope.target = undefined;
                 parentObj = attrs.enableEdit;
-                delayFn = element.on('blur', 'input', function (event) {
+                /*delayFn = element.on('blur', 'input', function (event) {
                     scope.target = event.delegateTarget;
                     $timeout(function () {
                         updateAssociatedParentProp(parentObj, false);
                     }, 0);
                 });
                 element.on('focus', 'input', function (event) {
+                    if (scope.target === undefined || scope.target === event.delegateTarget) {
+                        clearTimeout(delayFn);
+                        $timeout(function () {
+                            updateAssociatedParentProp(parentObj, true);
+                        }, 0);
+                    }
+                });*/
+
+                delayFn = element.find('input').bind('blur', function (event) {
+                    scope.target = event.delegateTarget;
+                    $timeout(function () {
+                        updateAssociatedParentProp(parentObj, false);
+                    }, 0);
+                });
+                element.find('input').bind('focus', function (event) {
                     if (scope.target === undefined || scope.target === event.delegateTarget) {
                         clearTimeout(delayFn);
                         $timeout(function () {
