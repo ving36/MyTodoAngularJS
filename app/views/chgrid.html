@@ -1,0 +1,30 @@
+<div>
+    <div class="controlBar">
+        <ul>
+            <li>Add</li>
+            <li>Edit</li>
+            <li>Delete</li>
+        </ul>
+    </div>
+    <table class="table table-striped grid">
+        <thead>
+            <tr>
+                <th>Action</th>
+                <th data-ng-repeat="p in props">
+                    {{p}}
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr data-ng-repeat="r in list" class="gridRow" id="$index" col-focus-on="r.rowConfig.focusOn.value">
+                <td><button>Add Row</button><button>Add Child</button></td>
+                <td data-ng-repeat="p in props" id="{{p}}">
+                    <div data-ng-dblclick="editItem($parent.$index, p, r)">
+                        <span data-ng-bind="r[p]" data-ng-show="!r.rowConfig.edit.value"></span>
+                        <input data-ng-show="r.rowConfig.edit.value" data-ng-blur="inputBlur()" data-ng-model="r[p]" id="{{$parent.$index}}">
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>

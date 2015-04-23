@@ -7,14 +7,13 @@ describe('Directive: myTreeGrid', function () {
     //beforeEach(module('views/mytreegrid.html'));
     beforeEach(module('mytemplates'));
 
-    var el,
-        scope, $compile;
-
-    beforeEach(inject(function ($rootScope, _$compile_) {
-
+    var el, scope, controller, $compile;
+    var elEE, scopeEE, controllerEE, compileEE;
+    var elDirFo, dirFo, scopeDirFo, isolateScopeFo, focusMeVal;
+    var isolateScope;
+    beforeEach(inject(function ($rootScope, _$compile_, $controller) {
         scope = $rootScope.$new();
         $compile = _$compile_;
-
         scope.countries = {
             items: [{
                     Name: "England",
@@ -25,18 +24,72 @@ describe('Directive: myTreeGrid', function () {
                     Code: 456
             }]
         };
-
         el = '<my-tree-grid list="countries.items"></my-tree-grid>';
         el = $compile(el)(scope);
         scope.$digest();
+        controller = el.controller('myTreeGrid');
+        isolateScope = el.isolateScope();
+        scopeDirFo = isolateScope.$new();
+        elDirFo = el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0).find('input');
+        elDirFo = $compile(elDirFo)(scopeDirFo);
+        isolateScopeFo = elDirFo.isolateScope();
     }));
-
 
     it('should have rows equal to number of items in source list', inject(function () {
         var isolated = el.isolateScope();
         expect(isolated.list).toBeDefined();
         expect(el.find('table').find('tbody').find('tr').length).toEqual(isolated.list.length);
     }));
+
+    describe('double click on row', function () {
+
+        beforeEach(inject(function () {
+            /*isolateScope = el.isolateScope();*/
+            spyOn(isolateScope, 'inputFocus');
+        }));
+
+        it('should set rowEditIndex and currentProp values', function () {
+            var item = {
+                Name: "England",
+                Code: 123,
+                edit: false,
+                focus: false
+            };
+            //console.log('before: ' + isolateScope.rowEditIndex);
+
+            console.log('setFocus: ' + isolateScopeFo.setFocus);
+            console.log('focus-Me: ' + isolateScope.$eval(elDirFo.attr('focus-me')));
+            isolateScope.editItem(0, 'Name', item);
+            isolateScope.$digest();
+            
+            focusMeVal = isolateScope.hasFocus(isolateScope.currentProp, isolateScope.rowEditIndex);
+            elDirFo.attr('focus-me', focusMeVal);
+            isolateScope.$digest();
+            
+            elDirFo = el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0).find('input');
+            console.log(elDirFo);
+            elDirFo = $compile(elDirFo)(scopeDirFo);
+            isolateScopeFo = elDirFo.isolateScope();
+            isolateScope.$digest();
+            console.log('setFocus: ' + isolateScopeFo.setFocus);
+            console.log('focus-Me: ' + isolateScope.$eval(elDirFo.attr('focus-me')));
+            
+            expect(isolateScope.rowEditIndex).toEqual(0);
+            expect(isolateScope.currentProp).toEqual('Name');
+            expect(item.edit).toEqual(true);
+            expect(item.focus).toEqual(true);
+            //expect(isolateScope.inputFocus).toHaveBeenCalled();
+            /*expect(isolateScope.$eval(el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0).find('input').attr('focus-me'))).toEqual(true);*/
+            /*console.log(isolateScope.$eval(el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0).find('input').attr('focus-me')));
+             */
+        });
+
+        it('should set focus to the property to edit', function () {
+            //     el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0).dblclick();
+            //            console.log(el.find('table').find('tbody').find('tr').eq(0).find('td').find('div').eq(0));
+            //            expect(scope.editItem).toHaveBeenCalled();
+        });
+    });
 });
 
 /*Directive to test passing of object to isolate scope*/
@@ -76,7 +129,7 @@ describe('directive: svg-circle', function () {
             expect(isolated.values.center).toBe(125);
             expect(isolated.values.radius).toBe(100);
         });
-    
+
         it("should contain a svg tag with proper size", function () {
             expect(element.attr('height')).toBe('250');
             expect(element.attr('width')).toBe('250');

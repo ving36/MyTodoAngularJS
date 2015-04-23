@@ -30,6 +30,7 @@ angular.module('mytodoApp')
                 $scope.rowEditIndex = undefined;
                 $scope.currentProp = undefined;
                 $scope.editItem = function (index, prop, item) {
+                    //console.log('control is here');
                     if ($scope.rowEditIndex !== index) {
                         $scope.rowEditIndex = index;
                         if (angular.isArray($scope.list)) {
@@ -39,7 +40,7 @@ angular.module('mytodoApp')
                             }
                         }
                     }
-                    console.log(prop);
+                    //console.log(prop);
                     item.edit = true; //!item.edit;
                     $scope.currentProp = prop;
                     if (prop !== undefined)
@@ -47,6 +48,7 @@ angular.module('mytodoApp')
                 };
 
                 $scope.hasFocus = function (prop, index) {
+                    //console.log('control in hasFocus');
                     return $scope.currentProp === prop && index === $scope.rowEditIndex ? true : false;
                 };
 
@@ -57,12 +59,8 @@ angular.module('mytodoApp')
 
                 $scope.inputFocus = function (prop) {
                     $scope.currentProp = prop;
-                    console.log(prop);
+                    console.log('ng-focus executed');
                 };
-
-                $scope.$watch('rowEditIndex', function (newValue, oldValue) {
-
-                })
             }
         };
     })
@@ -76,14 +74,17 @@ angular.module('mytodoApp')
                 //scope.setFocus = scope.$eval(attrs['focusMe']);
                 if (scope.setFocus !== undefined && scope.setFocus) {
                     element[0].focus();
-                    //console.log('focus me executed1');
+                    console.log('focus me executed1');
                 }
                 scope.$watch('setFocus', function (newValue, oldValue) {
+                   /* console.log('entered setFocus Change');
+                    console.log(newValue);
+                    console.log(oldValue);*/
                     if (newValue !== null && newValue !== undefined && newValue === true) {
                         $timeout(function () {
                             //if (scope.$eval(attrs.focusMe)) {
                             element[0].focus();
-                            //console.log('focus me executed2');
+                            console.log('focus me executed2');
                             //}
                         }, 0);
                     }
@@ -134,7 +135,7 @@ angular.module('mytodoApp')
                     scope.target = event.delegateTarget;
                     exitEdit = true;
                     delayFn = $timeout(function () {
-                        console.log('delayFn: ' + exitEdit);
+                        //console.log('delayFn: ' + exitEdit);
                         if (exitEdit === undefined || exitEdit) {
                             updateAssociatedParentProp(parentObj, false);
                             exitEdit = false;
@@ -150,7 +151,7 @@ angular.module('mytodoApp')
                         $timeout.cancel(delayFn);
                         //$timeout(function () {
                         updateAssociatedParentProp(parentObj, true);
-                        console.log('focusFn: ' + exitEdit);
+                        //console.log('focusFn: ' + exitEdit);
                         //}, -100);
                     }
                 });

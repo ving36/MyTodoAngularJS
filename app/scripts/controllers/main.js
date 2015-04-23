@@ -31,10 +31,12 @@ angular.module('mytodoApp')
 
         $scope.countries = [{
                 Name: 'England',
-                Code: 123
+                Code: 123,
+                Level: 1
             },
             {
                 Name: 'India',
-                Code: 456
+                Code: 456,
+                Level: 1
             }];
     }]);
